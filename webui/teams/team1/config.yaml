@@ -1,0 +1,5 @@
+team_name: team1
+base_url: https://www.saucedemo.com
+browser: chromium
+headless: true
+timeout: 30000

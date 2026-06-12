@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  foxhound:
+    build: .
+    container_name: foxhound-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./results:/app/results
+    environment:
+      - GITHUB_WEBHOOK_SECRET=${GITHUB_WEBHOOK_SECRET}
+    restart: unless-stopped
