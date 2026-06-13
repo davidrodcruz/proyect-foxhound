@@ -53,6 +53,20 @@
 - **Por qué:** Evita "dependency hell". Solo mantenedores del framework modifican `core/`. Los equipos contribuyen vía PRs.
 - **Regla:** `core/` NO se toca salvo cambios de arquitectura.
 
+### Decisión: `tests/` como carpeta padre para todos los tests
+- **Por qué:** Agrupa `api/`, `webui/` y `examples/` en una sola ubicación clara.
+- **Problema resuelto:** Antes estaban al mismo nivel que `core/`, `service-gateway/`, generando confusión.
+- **Estructura final:**
+  ```
+  ├── core/           # Framework core (restringido)
+  ├── tests/          # Todos los tests
+  │   ├── api/        # Tests de API
+  │   ├── webui/      # Tests de UI
+  │   └── examples/   # Ejemplos de referencia
+  ├── service-gateway/ # FastAPI server
+  └── run_tests.py    # CLI entry point
+  ```
+
 ### Decisión: `tests/webui/shared/` para pages compartidas
 - **Por qué:** Pages como Login, Header, Footer son usadas por múltiples equipos. Van en `shared/` para evitar duplicación.
 
@@ -108,6 +122,19 @@
 ### Decisión: CLI `run_tests.py` como entry point único
 - **Por qué:** Un solo comando para cualquier tipo de prueba. Wrapper sobre Behave.
 - **Flags:** `-t` (team), `-f` (feature), `--tags`, `-p` (parallel), `--type` (ui/api/all).
+- **Refactorización:** `run_tests.py` es mínimo (~30 líneas), toda la lógica vive en `core/run_tests_utils.py`.
+
+### Decisión: Separar lógica en `core/run_tests_utils.py`
+- **Por qué:** `run_tests.py` era demasiado grande (~180 líneas). Separación de responsabilidades.
+- **Ventajas:**
+  - `run_tests.py`: Solo CLI parsing y main()
+  - `core/run_tests_utils.py`: Lógica de ejecución, reportes, paralelismo
+- **Funciones migradas:** `clean_allure_results()`, `build_behave_command()`, `generate_report()`, `run_single()`, `run_parallel()`, `run_tests()`
+
+### Decisión: Limpiar allure-results antes de cada ejecución
+- **Por qué:** Evitar mezcla de resultados entre ejecuciones.
+- **Problema resuelto:** Al fallar un test, se generaba reporte con datos de ejecuciones anteriores.
+- **Implementación:** `clean_allure_results()` ejecuta `shutil.rmtree()` al inicio de `run_tests()`.
 
 ### Decisión: `subprocess.run()` para ejecutar Behave
 - **Por qué:** Aísla el proceso de Behave del CLI. Manejo limpio de exit codes y output.
@@ -149,6 +176,8 @@
 ### MCP Self-Healing
 - **Concepto:** Agente AI intercepta `ElementNotFound`, consulta DOM vía MCP, sugiere nuevo selector.
 - **Hook:** `core/base_page.py` expone acciones para que MCP las use como tools.
+- **Implementación actual:** `MCPHook` en `base_page.py` registra cada acción (click, fill, navigate, etc.) con timestamp.
+- **Formato de salida:** JSON en `results/mcp/actions_{session_id}.json` para consumo de agentes AI.
 
 ### Base de Datos
 - **Por qué:** JSON en disco no escala. SQLite para MVP, PostgreSQL para producción.
