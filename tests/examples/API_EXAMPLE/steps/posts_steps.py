@@ -1,7 +1,7 @@
 from behave import step
 from allure import attach
 from allure_commons.types import AttachmentType
-from handlers.posts_handler import PostsHandler
+from tests.examples.API_EXAMPLE.handlers.posts_handler import PostsHandler
 
 
 @step('the "{actor}" makes a "{method}" request to "{api_host}" API to get all "{endpoint}"')

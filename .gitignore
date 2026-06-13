@@ -32,3 +32,5 @@ Thumbs.db
 # Allure
 allure-results/
 allure-report/
+results/allure-report/
+results/complete.html

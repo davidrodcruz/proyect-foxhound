@@ -37,15 +37,15 @@
 - **Problema resuelto:** Evitar confusión entre `api/` (tests de API) y `api/` (servidor).
 - **Nombre alternativo considerado:** `api-server/`, `gateway/`, `server/`.
 
-### Decisión: `webui/teams/` para tests de UI
-- **Por qué:** Consistencia con `api/teams/`. Ambos siguen la misma convención `tipo/teams/equipo/`.
-- **Problema resuelto:** Antes era `teams/` solo, lo cual era inconsistente con `apis/teams/`.
+### Decisión: `tests/webui/teams/` para tests de UI
+- **Por qué:** Consistencia con `tests/api/teams/`. Ambos siguen la misma convención `tests/tipo/teams/equipo/`.
+- **Problema resuelto:** Agrupación clara de todos los tests en una sola carpeta `tests/`.
 
-### Decisión: `api/teams/` para tests de API
+### Decisión: `tests/api/teams/` para tests de API
 - **Por qué:** Separado de `service-gateway/` que es el servidor, no los tests.
-- **Nota:** `api/` contiene tests de API, `service-gateway/` contiene el servidor que ejecuta tests.
+- **Nota:** `tests/api/` contiene tests de API, `service-gateway/` contiene el servidor que ejecuta tests.
 
-### Decisión: `examples/` en vez de `templates/`
+### Decisión: `tests/examples/` en vez de `templates/`
 - **Por qué:** Son ejemplos con código funcional, no templates abstractos. Un desarrollador copia el ejemplo y lo modifica.
 - **Nombre alternativo considerado:** `templates/`, `samples/`, `boilerplate/`.
 
@@ -53,7 +53,7 @@
 - **Por qué:** Evita "dependency hell". Solo mantenedores del framework modifican `core/`. Los equipos contribuyen vía PRs.
 - **Regla:** `core/` NO se toca salvo cambios de arquitectura.
 
-### Decisión: `webui/shared/` para pages compartidas
+### Decisión: `tests/webui/shared/` para pages compartidas
 - **Por qué:** Pages como Login, Header, Footer son usadas por múltiples equipos. Van en `shared/` para evitar duplicación.
 
 ---

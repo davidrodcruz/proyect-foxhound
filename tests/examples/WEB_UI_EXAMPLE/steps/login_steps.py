@@ -1,7 +1,7 @@
 from behave import step
 from allure import attach
 from allure_commons.types import AttachmentType
-from pages.login_page import LoginPage
+from tests.examples.WEB_UI_EXAMPLE.pages.login_page import LoginPage
 
 
 @step("the user is on the login page")

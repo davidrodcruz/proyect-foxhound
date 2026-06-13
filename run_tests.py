@@ -1,7 +1,16 @@
 import argparse
+import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+
+def clean_allure_results() -> None:
+    """Remove previous allure results and reports to start fresh."""
+    for folder in ["results/allure-results", "results/allure-report"]:
+        path = Path(folder)
+        if path.exists():
+            shutil.rmtree(path)
 
 
 def build_behave_command(
@@ -21,7 +30,7 @@ def build_behave_command(
 
     paths = []
     if test_type in ("ui", "all"):
-        ui_path = Path("webui") / "teams" / team
+        ui_path = Path("tests/webui") / "teams" / team
         if ui_path.exists():
             if feature:
                 feature_file = ui_path / "features" / feature
@@ -31,7 +40,7 @@ def build_behave_command(
                 paths.append(str(ui_path / "features"))
 
     if test_type in ("api", "all"):
-        api_path = Path("api") / "teams" / team
+        api_path = Path("tests/api") / "teams" / team
         if api_path.exists():
             if feature:
                 feature_file = api_path / "features" / feature
@@ -48,6 +57,43 @@ def build_behave_command(
     return cmd
 
 
+def generate_report() -> None:
+    allure_results = Path("results/allure-results")
+    allure_report = Path("results/allure-report")
+
+    if not allure_results.exists():
+        print("No allure-results found, skipping report generation")
+        return
+
+    try:
+        subprocess.run(
+            ["allure", "--version"],
+            capture_output=True,
+            check=True,
+            shell=(sys.platform == "win32")
+        )
+    except FileNotFoundError:
+        print("\n⚠️  Allure CLI not installed. Skipping report generation.")
+        print("   Install: npm install -g allure")
+        print(f"   Raw results available at: {allure_results.absolute()}")
+        return
+
+    print("\n📊 Generating Allure report...")
+    result = subprocess.run([
+        "allure", "awesome",
+        str(allure_results),
+        "-o", str(allure_report),
+        "--single-file"
+    ], shell=(sys.platform == "win32"))
+
+    if result.returncode == 0:
+        report_path = allure_report / "index.html"
+        if report_path.exists():
+            print(f"✅ Report generated: {report_path.absolute()}")
+    else:
+        print("❌ Failed to generate report")
+
+
 def run_tests(
     team: str,
     test_type: str,
@@ -55,6 +101,7 @@ def run_tests(
     tags: str = None,
     parallel: int = 1,
 ) -> int:
+    clean_allure_results()
     teams = [t.strip() for t in team.split(",")]
 
     if len(teams) > 1 and parallel > 1:
@@ -71,6 +118,7 @@ def run_tests(
         if result.returncode != 0:
             total_exit_code = 1
 
+    generate_report()
     return total_exit_code
 
 

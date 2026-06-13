@@ -1,11 +1,21 @@
 from behave import step
 from allure import attach
 from allure_commons.types import AttachmentType
-from pages.login_page import LoginPage
+from tests.webui.teams.team1.pages.login_page import LoginPage
+from playwright.async_api import async_playwright
+
+
+async def _ensure_page(context):
+    if not hasattr(context, "page") or context.page is None:
+        context._playwright = await async_playwright().start()
+        context._browser = await context._playwright.chromium.launch(headless=True)
+        context._browser_context = await context._browser.new_context()
+        context.page = await context._browser_context.new_page()
 
 
 @step("the user is on the login page")
 async def step_navigate(context):
+    await _ensure_page(context)
     context.login_page = LoginPage(context.page)
     await context.login_page.navigate()
     attach("Navigated to SauceDemo login page", name="Step Info", attachment_type=AttachmentType.TEXT)
