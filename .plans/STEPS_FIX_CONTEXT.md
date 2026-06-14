@@ -33,7 +33,7 @@ E:\Proyect-FoxHound\
 │   └── examples/
 │       ├── API_EXAMPLE/          # WORKING reference - uses PostsHandler
 │       └── WEB_UI_EXAMPLE/       # WORKING reference - uses LoginPage
-├── service-gateway/            # FastAPI server
+├── service_gateway/           # FastAPI server
 ├── run_tests.py              # CLI orchestrator: python run_tests.py -t team1 --type api
 └── requirements.txt          # playwright, behave, allure-behave, fastapi, etc.
 ```

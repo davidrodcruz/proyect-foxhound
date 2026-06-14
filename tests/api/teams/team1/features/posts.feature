@@ -1,3 +1,4 @@
+@team1 @api
 Feature: Posts API on JSONPlaceholder
 
   @smoke @api

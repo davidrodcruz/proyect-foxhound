@@ -1,5 +1,6 @@
 import asyncio
 
+import allure
 from allure import attach
 from allure_commons.types import AttachmentType
 
@@ -21,6 +22,12 @@ def before_scenario(context, scenario):
         return
 
     context.shared_data = {}
+
+    feature_file = scenario.feature.filename
+    team = "team1"
+    if "teams/" in feature_file:
+        team = feature_file.split("teams/")[1].split("/")[0]
+    allure.dynamic.package(f"{team} · WebUI")
 
 
 def after_step(context, step):

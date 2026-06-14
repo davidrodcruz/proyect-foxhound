@@ -21,8 +21,8 @@ API_EXAMPLE/
 
 ## Cómo usar como base
 
-1. Copia la carpeta `API_EXAMPLE/` a `api/teams/tu_equipo/`
-2. Actualiza `api/resources/api_resources.ini` con tus endpoints
+1. Copia la carpeta `API_EXAMPLE/` a `tests/api/teams/tu_equipo/`
+2. Actualiza `tests/api/resources/api_resources.ini` con tus endpoints
 3. Crea un handler para tu dominio (ej: `users_handler.py`)
 4. Crea los features y steps según tu API
 5. Ejecuta: `python run_tests.py -t tu_equipo --type api`

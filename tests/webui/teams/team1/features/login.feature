@@ -1,3 +1,4 @@
+@team1 @webui
 Feature: Login on SauceDemo
 
   Background:

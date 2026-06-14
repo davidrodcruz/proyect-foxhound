@@ -28,13 +28,19 @@ Foxhound es un framework que demuestra dominio de automatización de pruebas con
 
 ```
 .
-├── service-gateway/        # FastAPI Server (API-first)
 ├── core/                   # Framework engine (clases base)
-├── webui/teams/            # Web UI tests por equipo
-├── api/teams/              # API tests por equipo
-├── examples/               # Ejemplos documentados
+│   ├── base_page.py        # BasePage + MCPHook
+│   ├── api_handler.py      # Playwright APIRequestContext wrapper
+│   ├── config.py           # Multi-team YAML config
+│   ├── run_tests_utils.py  # Lógica de ejecución CLI
+│   └── drivers/            # Browser/context factory
+├── tests/                  # Todos los tests
+│   ├── api/teams/          # API tests por equipo
+│   ├── webui/teams/        # Web UI tests por equipo
+│   └── examples/           # Ejemplos de referencia
+├── service_gateway/       # FastAPI Server (API-first)
 ├── results/                # Artifacts de ejecución
-├── run_tests.py            # CLI entry point
+├── run_tests.py            # CLI entry point (~30 líneas)
 ├── Dockerfile              # Imagen Docker
 ├── docker-compose.yml      # Server en Docker
 ├── docker-compose.test.yml # Tests en Docker
@@ -78,7 +84,7 @@ python run_tests.py -t team1 --tags @smoke
 
 ```bash
 # Levantar servidor
-uvicorn service-gateway.server:app --reload --port 8000
+uvicorn service_gateway.server:app --reload --port 8000
 
 # Ejecutar tests
 curl -X POST http://localhost:8000/api/v1/tests/run \
@@ -179,9 +185,27 @@ allure serve results/allure-results
 |--------|------|-------------|
 | `POST` | `/api/v1/tests/run` | Ejecutar tests (fire & forget) |
 | `GET` | `/api/v1/tests/run/{run_id}` | Consultar estado |
-| `GET` | `/api/v1/tests/run/{run_id}/report` | Descargar reporte Allure |
+| `GET` | `/api/v1/tests/run/{run_id}/report` | Ver/descargar reporte Allure |
 | `POST` | `/api/v1/webhooks/github` | Webhook GitHub Actions |
 | `GET` | `/api/v1/health` | Health check |
+
+### Reporte Allure - Query Params
+
+| Param | Default | Descripción |
+|-------|---------|-------------|
+| `format` | `html` | `html` (navegador) o `raw` (ZIP) |
+| `download` | `false` | Forzar descarga del archivo |
+
+```bash
+# Ver HTML en navegador
+http://localhost:8000/api/v1/tests/run/{run_id}/report
+
+# Descargar HTML
+http://localhost:8000/api/v1/tests/run/{run_id}/report?download=true
+
+# Descargar ZIP raw
+http://localhost:8000/api/v1/tests/run/{run_id}/report?format=raw
+```
 
 ---
 
@@ -210,7 +234,7 @@ allure serve results/allure-results
 - Features: GET all, GET by ID, POST create
 - Patrón: Handler + Resources INI
 
-Ver `examples/` para código completo.
+Ver `tests/examples/` para código completo.
 
 ---
 

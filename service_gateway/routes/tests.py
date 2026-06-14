@@ -3,8 +3,8 @@ import zipfile
 from io import BytesIO
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import StreamingResponse
+from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import HTMLResponse, StreamingResponse
 
 from service_gateway.models.test_run import (
     RunStatus,
@@ -54,7 +54,11 @@ async def get_run_status(run_id: str):
 
 
 @router.get("/run/{run_id}/report")
-async def get_run_report(run_id: str):
+async def get_run_report(
+    run_id: str,
+    format: str = Query("html", enum=["html", "raw"]),
+    download: bool = Query(False),
+):
     run = run_history.get_run(run_id)
     if not run:
         raise HTTPException(status_code=404, detail=f"Run '{run_id}' not found")
@@ -65,7 +69,23 @@ async def get_run_report(run_id: str):
             detail=f"Report not ready. Current status: {run.status}",
         )
 
-    allure_results = Path("results") / run_id / "allure-results"
+    run_dir = Path("results") / run_id
+
+    if format == "html":
+        report_path = run_dir / "allure-report" / "index.html"
+        if not report_path.exists():
+            raise HTTPException(status_code=404, detail="HTML report not found")
+        html_content = report_path.read_text(encoding="utf-8")
+
+        if download:
+            return StreamingResponse(
+                iter([html_content.encode("utf-8")]),
+                media_type="text/html",
+                headers={"Content-Disposition": f"attachment; filename=report-{run_id}.html"},
+            )
+        return HTMLResponse(content=html_content)
+
+    allure_results = run_dir / "allure-results"
     if not allure_results.exists():
         raise HTTPException(status_code=404, detail="Allure results not found")
 

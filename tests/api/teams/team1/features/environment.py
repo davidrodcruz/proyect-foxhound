@@ -1,3 +1,4 @@
+import allure
 from playwright.async_api import async_playwright
 
 
@@ -20,6 +21,12 @@ def before_scenario(context, scenario):
         return
 
     context.shared_data = {}
+
+    feature_file = scenario.feature.filename
+    team = "team1"
+    if "teams/" in feature_file:
+        team = feature_file.split("teams/")[1].split("/")[0]
+    allure.dynamic.package(f"{team} · API")
 
 
 def after_scenario(context, scenario):

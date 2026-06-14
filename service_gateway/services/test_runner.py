@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 import sys
 import threading
@@ -39,6 +40,21 @@ def execute(
                 )
 
             exit_code = result.returncode
+
+            allure_results_src = Path("results/allure-results")
+            allure_results_dst = results_dir / "allure-results"
+            if allure_results_src.exists():
+                if allure_results_dst.exists():
+                    shutil.rmtree(allure_results_dst)
+                shutil.copytree(allure_results_src, allure_results_dst)
+
+            allure_report_src = Path("results/allure-report")
+            allure_report_dst = results_dir / "allure-report"
+            if allure_report_src.exists():
+                if allure_report_dst.exists():
+                    shutil.rmtree(allure_report_dst)
+                shutil.copytree(allure_report_src, allure_report_dst)
+
             if exit_code == 0:
                 run_history.update_status(run_id, RunStatus.COMPLETED, exit_code)
             else:

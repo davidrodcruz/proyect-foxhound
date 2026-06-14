@@ -20,7 +20,7 @@ WEB_UI_EXAMPLE/
 
 ## Cómo usar como base
 
-1. Copia la carpeta `WEB_UI_EXAMPLE/` a `webui/teams/tu_equipo/`
+1. Copia la carpeta `WEB_UI_EXAMPLE/` a `tests/webui/teams/tu_equipo/`
 2. Renombra los archivos según tu dominio
 3. Modifica los selectores en el Page Object
 4. Actualiza los steps según tu lógica de negocio

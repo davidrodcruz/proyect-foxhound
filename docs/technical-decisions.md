@@ -24,7 +24,7 @@
 - **Por qué:** Estándar industry, soporta adjuntos (screenshots, logs, curl commands), dashboard interactivo.
 - **Alternativa descartada:** Reports HTML simples (menos funcional).
 
-### Decisión: FastAPI para service-gateway
+### Decisión: FastAPI para service_gateway
 - **Por qué:** Moderno, async nativo, Swagger automático en `/docs`, type hints con Pydantic.
 - **Alternativa descartada:** Flask (sync, menos features), Starlette (más bajo nivel).
 
@@ -32,9 +32,9 @@
 
 ## 2. Arquitectura de Carpetas
 
-### Decisión: `service-gateway/` para el servidor FastAPI
+### Decisión: `service_gateway/` para el servidor FastAPI
 - **Por qué:** Nombre descriptivo que separa claramente el "gateway" de entrada (API server) del "core" del framework.
-- **Problema resuelto:** Evitar confusión entre `api/` (tests de API) y `api/` (servidor).
+- **Problema resuelto:** Evitar confusión entre `tests/api/` (tests de API) y `service_gateway/` (servidor).
 - **Nombre alternativo considerado:** `api-server/`, `gateway/`, `server/`.
 
 ### Decisión: `tests/webui/teams/` para tests de UI
@@ -42,8 +42,8 @@
 - **Problema resuelto:** Agrupación clara de todos los tests en una sola carpeta `tests/`.
 
 ### Decisión: `tests/api/teams/` para tests de API
-- **Por qué:** Separado de `service-gateway/` que es el servidor, no los tests.
-- **Nota:** `tests/api/` contiene tests de API, `service-gateway/` contiene el servidor que ejecuta tests.
+- **Por qué:** Separado de `service_gateway/` que es el servidor, no los tests.
+- **Nota:** `tests/api/` contiene tests de API, `service_gateway/` contiene el servidor que ejecuta tests.
 
 ### Decisión: `tests/examples/` en vez de `templates/`
 - **Por qué:** Son ejemplos con código funcional, no templates abstractos. Un desarrollador copia el ejemplo y lo modifica.
@@ -55,7 +55,7 @@
 
 ### Decisión: `tests/` como carpeta padre para todos los tests
 - **Por qué:** Agrupa `api/`, `webui/` y `examples/` en una sola ubicación clara.
-- **Problema resuelto:** Antes estaban al mismo nivel que `core/`, `service-gateway/`, generando confusión.
+- **Problema resuelto:** Antes estaban al mismo nivel que `core/`, `service_gateway/`, generando confusión.
 - **Estructura final:**
   ```
   ├── core/           # Framework core (restringido)
@@ -63,7 +63,7 @@
   │   ├── api/        # Tests de API
   │   ├── webui/      # Tests de UI
   │   └── examples/   # Ejemplos de referencia
-  ├── service-gateway/ # FastAPI server
+  ├── service_gateway/ # FastAPI server
   └── run_tests.py    # CLI entry point
   ```
 
@@ -159,6 +159,14 @@
 ### Decisión: Adjuntar curl formateado en tests de API
 - **Por qué:** Reproducibilidad. Si un test falla, el desarrollador puede copiar el curl y reproducir.
 - **Implementación:** Genera curl string y lo adjunta con `allure.attach()`.
+
+### Decisión: Endpoint de reporte con formatos flexibles
+- **Por qué:** Diferentes clientes necesitan diferentes formatos (navegador, Postman, scripts).
+- **Implementación:** `GET /api/v1/tests/run/{run_id}/report` con query params:
+  - `format=html` (default): Devuelve HTML renderizado
+  - `format=raw`: Devuelve ZIP con datos Allure
+  - `download=true`: Forzar descarga del archivo
+- **Caso de uso:** Abrir en navegador muestra HTML, Postman puede descargar ZIP.
 
 ---
 

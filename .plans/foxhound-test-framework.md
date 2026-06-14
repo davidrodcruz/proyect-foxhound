@@ -7,14 +7,14 @@
 
 ## Overview
 
-Foxhound es un framework BDD para automatización de pruebas que demuestra dominio de Playwright, Behave, patrones de diseño como POM, y generación de reportes con Allure. Soporta pruebas de Web UI y API con una estructura escalable por equipos. Incluye una capa FastAPI (`service-gateway/`) para ejecutar tests vía REST API y recibir webhooks de GitHub Actions.
+Foxhound es un framework BDD para automatización de pruebas que demuestra dominio de Playwright, Behave, patrones de diseño como POM, y generación de reportes con Allure. Soporta pruebas de Web UI y API con una estructura escalable por equipos. Incluye una capa FastAPI (`service_gateway/`) para ejecutar tests vía REST API y recibir webhooks de GitHub Actions.
 
 ---
 
 ## Goals
 
 1. CLI único (`run_tests.py`) para ejecutar cualquier prueba (UI o API)
-2. API REST (`service-gateway/`) para ejecutar tests vía HTTP
+2. API REST (`service_gateway/`) para ejecutar tests vía HTTP
 3. Webhook endpoint para GitHub Actions
 4. Soporte Web UI y API usando Playwright para ambos
 5. Estructura `webui/teams/` para UI y `api/teams/` para API
@@ -39,7 +39,7 @@ Foxhound es un framework BDD para automatización de pruebas que demuestra domin
 
 ```text
 .
-├── service-gateway/                    # 🔌 FastAPI Server (API-first entry point)
+├── service_gateway/                    # 🔌 FastAPI Server (API-first entry point)
 │   ├── __init__.py
 │   ├── server.py                       # FastAPI app principal + startup/shutdown
 │   ├── routes/
@@ -414,7 +414,7 @@ comments = /posts/{id}/comments
 
 ---
 
-## FastAPI Server: `service-gateway/`
+## FastAPI Server: `service_gateway/`
 
 ### Endpoints
 
@@ -426,7 +426,7 @@ comments = /posts/{id}/comments
 | `POST` | `/api/v1/webhooks/github` | Recibir webhook de GitHub Actions | Payload GitHub |
 | `GET` | `/api/v1/health` | Health check | — |
 
-### `service-gateway/server.py`
+### `service_gateway/server.py`
 ```python
 # FastAPI app con:
 # - CORS habilitado
@@ -435,7 +435,7 @@ comments = /posts/{id}/comments
 # - Swagger automático en /docs
 ```
 
-### `service-gateway/routes/tests.py`
+### `service_gateway/routes/tests.py`
 ```python
 # POST /api/v1/tests/run:
 #   - Valida request con Pydantic model
@@ -454,7 +454,7 @@ comments = /posts/{id}/comments
 #   - Retorna archivo ZIP
 ```
 
-### `service-gateway/routes/webhooks.py`
+### `service_gateway/routes/webhooks.py`
 ```python
 # POST /api/v1/webhooks/github:
 #   - Verifica X-Hub-Signature-256 (HMAC SHA-256)
@@ -466,7 +466,7 @@ comments = /posts/{id}/comments
 # Secret: GITHUB_WEBHOOK_SECRET desde .env
 ```
 
-### `service-gateway/services/test_runner.py`
+### `service_gateway/services/test_runner.py`
 ```python
 # execute(run_id, config):
 #   - Actualiza status a "running"
@@ -477,7 +477,7 @@ comments = /posts/{id}/comments
 #   - En thread separado para no bloquear
 ```
 
-### `service-gateway/store/run_history.py`
+### `service_gateway/store/run_history.py`
 ```python
 # Almacena en memoria + archivo results/runs.json
 # Estructura por run:
@@ -498,7 +498,7 @@ comments = /posts/{id}/comments
 
 ```bash
 # Levantar el servidor
-uvicorn service-gateway.server:app --reload --port 8000
+uvicorn service_gateway.server:app --reload --port 8000
 
 # Ejecutar tests vía API
 curl -X POST http://localhost:8000/api/v1/tests/run \
@@ -636,12 +636,12 @@ Carga config desde `webui/teams/{team}/config.yaml` o `api/teams/{team}/config.y
 3. Probar CLI completo end-to-end
 
 ### Fase 4: FastAPI Server + Webhooks (2-3 días)
-1. Implementar `service-gateway/server.py` (FastAPI app)
-2. Implementar `service-gateway/models/test_run.py` (Pydantic models)
-3. Implementar `service-gateway/store/run_history.py` (JSON storage)
-4. Implementar `service-gateway/services/test_runner.py` (background execution)
-5. Implementar `service-gateway/routes/tests.py` (POST run, GET status, GET report)
-6. Implementar `service-gateway/routes/webhooks.py` (GitHub webhook)
+1. Implementar `service_gateway/server.py` (FastAPI app)
+2. Implementar `service_gateway/models/test_run.py` (Pydantic models)
+3. Implementar `service_gateway/store/run_history.py` (JSON storage)
+4. Implementar `service_gateway/services/test_runner.py` (background execution)
+5. Implementar `service_gateway/routes/tests.py` (POST run, GET status, GET report)
+6. Implementar `service_gateway/routes/webhooks.py` (GitHub webhook)
 7. Agregar `GITHUB_WEBHOOK_SECRET` a `.env.example`
 8. Probar endpoints con curl/Postman
 

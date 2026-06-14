@@ -4,7 +4,6 @@ WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
-ENV ALLURE_VERSION=2.27.0
 ENV PYTHONPATH=/app
 
 RUN apt-get update && \
@@ -14,6 +13,7 @@ RUN apt-get update && \
     curl \
     unzip \
     wget \
+    npm \
     libnss3 \
     libnspr4 \
     libatk1.0-0 \
@@ -34,11 +34,7 @@ RUN apt-get update && \
     libwayland-client0 && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -sLo allure.zip https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.zip && \
-    unzip allure.zip -d /opt/ && \
-    mv /opt/allure-${ALLURE_VERSION} /opt/allure && \
-    ln -s /opt/allure/bin/allure /usr/bin/allure && \
-    rm allure.zip
+RUN npm install -g allure
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \

@@ -27,7 +27,7 @@ Usa el archivo `docker-compose.test.yml` para ejecutar los tests aislados sin le
 El servidor FastAPI permite disparar pruebas de forma asíncrona ("fire & forget").
 
 **Levantar el servidor:**
-`uvicorn service-gateway.server:app --reload --port 8000`
+`uvicorn service_gateway.server:app --reload --port 8000`
 
 **Disparar ejecución de tests:**
 ```bash
@@ -44,7 +44,7 @@ curl -X POST http://localhost:8000/api/v1/tests/run \
 
 ### Entry Points Principales
 - `run_tests.py`: CLI principal, acepta flags `-t`, `-f`, `--tags`, `-p`, `--type`.
-- `service-gateway/server:app`: API para gestión de ejecuciones.
+- `service_gateway/server:app`: API para gestión de ejecuciones.
 - `webhooks/github`: Endpoint para recibir notificaciones y disparar procesos.
 
 ### Outputs Generados
