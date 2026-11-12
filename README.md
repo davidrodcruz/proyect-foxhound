@@ -221,7 +221,6 @@ http://localhost:8000/api/v1/tests/run/{run_id}/report?format=raw
 | `@regression` | Suite completa |
 | `@wip` | En desarrollo |
 | `@api` | Prueba de API |
-| `@api` | Prueba de API |
 | `@critical` | Bloqueante |
 
 ---
