@@ -1,7 +1,7 @@
 from behave import step
 from allure import attach
 from allure_commons.types import AttachmentType
-from tests.api.handlers.http_handler import HttpHandler
+from core.handlers.http_handler import HttpHandler
 from playwright.async_api import async_playwright
 
 

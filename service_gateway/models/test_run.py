@@ -6,7 +6,6 @@ from pydantic import BaseModel
 
 
 class TestType(str, Enum):
-    UI = "ui"
     API = "api"
     ALL = "all"
 

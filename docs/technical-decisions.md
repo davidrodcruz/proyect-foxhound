@@ -37,9 +37,10 @@
 - **Problema resuelto:** Evitar confusión entre `tests/api/` (tests de API) y `service_gateway/` (servidor).
 - **Nombre alternativo considerado:** `api-server/`, `gateway/`, `server/`.
 
-### Decisión: `tests/webui/teams/` para tests de UI
-- **Por qué:** Consistencia con `tests/api/teams/`. Ambos siguen la misma convención `tests/tipo/teams/equipo/`.
-- **Problema resuelto:** Agrupación clara de todos los tests en una sola carpeta `tests/`.
+### Decisión: `tests/webui/teams/` para tests de UI — **(Extraído a Proyect-PATRIOT)**
+- **Estado:** La parte de Web UI fue extraída a un framework independiente **Proyect-PATRIOT** (carpeta hermana de este repo).
+- **Por qué:** Separar claramente los dos frameworks (Web UI vs API) que estaban mezclados en este repo.
+- **Dónde vive ahora:** `Proyect-PATRIOT/tests/webui/teams/` y `Proyect-PATRIOT/core/` (base_page, drivers).
 
 ### Decisión: `tests/api/teams/` para tests de API
 - **Por qué:** Separado de `service_gateway/` que es el servidor, no los tests.
@@ -59,10 +60,9 @@
 - **Estructura final:**
   ```
   ├── core/           # Framework core (restringido)
-  ├── tests/          # Todos los tests
-  │   ├── api/        # Tests de API
-  │   ├── webui/      # Tests de UI
-  │   └── examples/   # Ejemplos de referencia
+   ├── tests/          # Tests de API
+   │   ├── api/        # Tests de API
+   │   └── examples/   # Ejemplos de referencia (API)
   ├── service_gateway/ # FastAPI server
   └── run_tests.py    # CLI entry point
   ```
@@ -74,10 +74,11 @@
 
 ## 3. Patrones de Diseño
 
-### Decisión: Page Object Model (POM) para UI
+### Decisión: Page Object Model (POM) para UI — **(Extraído a Proyect-PATRIOT)**
 - **Por qué:** Curva de aprendizaje menor, mayor claridad para equipos heterogéneos.
 - **Alternativa descartada:** Screenplay pattern (más potente pero más complejo).
 - **Implementación:** Cada page tiene selectores como constantes y métodos para acciones.
+- **Nota:** El framework UI completo (POM + `base_page.py` + `drivers/playwright_driver.py`) ahora vive en **Proyect-PATRIOT**.
 
 ### Decisión: Handler + Resources INI para API
 - **Por qué:** Patrón probado en repo existente. Config centralizada de endpoints en INI.
@@ -183,8 +184,8 @@
 
 ### MCP Self-Healing
 - **Concepto:** Agente AI intercepta `ElementNotFound`, consulta DOM vía MCP, sugiere nuevo selector.
-- **Hook:** `core/base_page.py` expone acciones para que MCP las use como tools.
-- **Implementación actual:** `MCPHook` en `base_page.py` registra cada acción (click, fill, navigate, etc.) con timestamp.
+- **Hook:** El framework de Web UI (en **Proyect-PATRIOT**) expone `core/base_page.py` con `MCPHook` para que MCP las use como tools.
+- **Implementación actual:** `MCPHook` registra cada acción (click, fill, navigate, etc.) con timestamp. (Código ahora en el repo hermano Proyect-PATRIOT.)
 - **Formato de salida:** JSON en `results/mcp/actions_{session_id}.json` para consumo de agentes AI.
 
 ### Base de Datos

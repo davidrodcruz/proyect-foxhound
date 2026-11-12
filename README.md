@@ -1,13 +1,15 @@
 # Foxhound Test Framework
 
-> Framework de automatización de pruebas BDD (Web UI + API) para portafolio personal.
+> Framework de automatización de pruebas BDD (API) para portafolio personal.
 > Playwright + Python + Behave + Allure + FastAPI
 
 ---
 
 ## Overview
 
-Foxhound es un framework que demuestra dominio de automatización de pruebas con tecnologías modernas. Soporta pruebas de Web UI y API con una estructura escalable por equipos, incluyendo una capa API para ejecutar tests vía HTTP y recibir webhooks de GitHub Actions.
+Foxhound es un framework que demuestra dominio de automatización de pruebas con tecnologías modernas. Soporta pruebas de API con una estructura escalable por equipos, incluyendo una capa API para ejecutar tests vía HTTP y recibir webhooks de GitHub Actions.
+
+> La parte de **Web UI** fue extraída a un framework hermano **Proyect-PATRIOT**.
 
 ---
 
@@ -16,7 +18,7 @@ Foxhound es un framework que demuestra dominio de automatización de pruebas con
 | Tecnología | Uso |
 |------------|-----|
 | **Python 3.11+** | Lenguaje principal |
-| **Playwright** | Browser automation + API testing |
+| **Playwright** | API testing (APIRequestContext) |
 | **Behave** | BDD runner (Gherkin) |
 | **Allure** | Reporting y evidencia |
 | **FastAPI** | REST API + webhooks |
@@ -28,16 +30,13 @@ Foxhound es un framework que demuestra dominio de automatización de pruebas con
 
 ```
 .
-├── core/                   # Framework engine (clases base)
-│   ├── base_page.py        # BasePage + MCPHook
+├── core/                   # Framework engine (API)
 │   ├── api_handler.py      # Playwright APIRequestContext wrapper
 │   ├── config.py           # Multi-team YAML config
-│   ├── run_tests_utils.py  # Lógica de ejecución CLI
-│   └── drivers/            # Browser/context factory
-├── tests/                  # Todos los tests
+│   └── run_tests_utils.py  # Lógica de ejecución CLI
+├── tests/                  # Tests de API
 │   ├── api/teams/          # API tests por equipo
-│   ├── webui/teams/        # Web UI tests por equipo
-│   └── examples/           # Ejemplos de referencia
+│   └── examples/           # Ejemplos de referencia (API)
 ├── service_gateway/       # FastAPI Server (API-first)
 ├── results/                # Artifacts de ejecución
 ├── run_tests.py            # CLI entry point (~30 líneas)
@@ -46,6 +45,11 @@ Foxhound es un framework que demuestra dominio de automatización de pruebas con
 ├── docker-compose.test.yml # Tests en Docker
 └── requirements.txt
 ```
+
+> **Nota:** La parte de **Web UI** se extrajo a un framework independiente:
+> **`Proyect-PATRIOT`** (carpeta hermana de este repo). Contiene `core/base_page.py`,
+> `core/drivers/playwright_driver.py`, `tests/webui/` y `tests/examples/WEB_UI_EXAMPLE/`.
+> Este repo (FoxHound) ahora es **solo API**.
 
 ---
 
@@ -217,17 +221,12 @@ http://localhost:8000/api/v1/tests/run/{run_id}/report?format=raw
 | `@regression` | Suite completa |
 | `@wip` | En desarrollo |
 | `@api` | Prueba de API |
-| `@ui` | Prueba de Web UI |
+| `@api` | Prueba de API |
 | `@critical` | Bloqueante |
 
 ---
 
 ## Ejemplos
-
-### Web UI: Login en SauceDemo
-- Site: `https://www.saucedemo.com/`
-- Features: Login exitoso, login inválido
-- Patrón: Page Object Model
 
 ### API: Posts CRUD en JSONPlaceholder
 - API: `https://jsonplaceholder.typicode.com`
@@ -235,6 +234,9 @@ http://localhost:8000/api/v1/tests/run/{run_id}/report?format=raw
 - Patrón: Handler + Resources INI
 
 Ver `tests/examples/` para código completo.
+
+> El ejemplo de **Web UI** (Login en SauceDemo) se movió al framework
+> independiente **Proyect-PATRIOT** (`tests/examples/WEB_UI_EXAMPLE/`).
 
 ---
 

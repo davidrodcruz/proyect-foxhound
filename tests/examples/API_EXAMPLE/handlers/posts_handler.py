@@ -10,7 +10,7 @@ class PostsHandler:
         self.api_context = api_context
         self.host_name = "jsonplaceholder"
         self._config = configparser.ConfigParser()
-        resources_path = Path(__file__).parent.parent.parent.parent / "api" / "resources" / "api_resources.ini"
+        resources_path = Path(__file__).resolve().parent.parent.parent.parent.parent / "resources" / "api_resources.ini"
         self._config.read(resources_path)
 
     def _build_url(self, endpoint_name: str, **kwargs) -> str:

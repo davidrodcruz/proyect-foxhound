@@ -9,7 +9,7 @@ class HttpHandler:
     def __init__(self, api_context: APIRequestContext):
         self.api_context = api_context
         self._config = configparser.ConfigParser()
-        resources_path = Path(__file__).parent.parent / "resources" / "api_resources.ini"
+        resources_path = Path(__file__).resolve().parent.parent.parent.parent / "resources" / "api_resources.ini"
         self._config.read(resources_path)
 
     def get_host_url(self, host_name: str) -> str:

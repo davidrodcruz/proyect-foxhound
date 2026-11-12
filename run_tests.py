@@ -20,7 +20,7 @@ def main():
     )
     parser.add_argument(
         "--type",
-        choices=["ui", "api", "all"],
+        choices=["api", "all"],
         default="all",
         help="Test type: ui, api, or all (default: all)",
     )

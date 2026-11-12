@@ -28,16 +28,6 @@ def build_behave_command(
         cmd.extend(["--tags", tags])
 
     paths = []
-    if test_type in ("ui", "all"):
-        ui_path = Path("tests/webui") / "teams" / team
-        if ui_path.exists():
-            if feature:
-                feature_file = ui_path / "features" / feature
-                if feature_file.exists():
-                    paths.append(str(feature_file))
-            else:
-                paths.append(str(ui_path / "features"))
-
     if test_type in ("api", "all"):
         api_path = Path("tests/api") / "teams" / team
         if api_path.exists():

@@ -109,33 +109,36 @@ async def step_verify_list(context):
 
 **Regla:** Cada step que acceda a `context.response.json()` debe ser `async def` con `await`.
 
-### `ModuleNotFoundError: No module named 'pages'` en steps UI
+> **Nota:** Las secciones de Web UI (steps UI, `context.page`, browser de Playwright) se movieron
+> al framework independiente **Proyect-PATRIOT**. El FAQ de UI ya no aplica a este repo (FoxHound es solo API).
+
+### `ModuleNotFoundError: No module named 'pages'` en steps UI — *(sección archivada, aplica a Proyect-PATRIOT)*
 
 **Causa:** La estructura de directorios del equipo tiene `pages/` fuera de `features/`:
 ```
 tests/webui/teams/team1/
 ├── features/
 │   └── steps/
-│       └── login_steps.py    # importa "from tests.webui.teams.team1.pages.login_page"
+│       └── login_steps.py    # importa "from pages.login_page"
 └── pages/
     └── login_page.py         # está un nivel arriba
 ```
 Python no encuentra `pages` porque solo busca en el directorio actual y `sys.path`.
 
-**Solución:** Agregar el directorio raíz del equipo al `sys.path` al inicio del step file:
+**Solución:** Agregar el directorio raíz del equipo al `sys.path` en `environment.py` (before_all):
 
 ```python
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-
-from pages.login_page import LoginPage
+_TEAM_DIR = Path(__file__).resolve().parent.parent
+if str(_TEAM_DIR) not in sys.path:
+    sys.path.insert(0, str(_TEAM_DIR))
 ```
 
 **Regla:** Cuando crees nuevos page objects en `teams/<team>/pages/`, usa este patrón de import en los steps.
 
-### `AttributeError` en `context.page` durante steps UI
+### `AttributeError` en `context.page` durante steps UI — *(sección archivada, aplica a Proyect-PATRIOT)*
 
 **Causa:** El `environment.py` de UI no crea el browser de Playwright. Los hooks son síncronos y no pueden inicializar objetos async.
 

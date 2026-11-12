@@ -12,12 +12,10 @@ class Config:
         self._root_dir = Path(__file__).parent.parent
 
     def get_team_config(self, team: str, test_type: str) -> dict[str, Any]:
-        if test_type == "ui":
-            config_path = self._root_dir / "webui" / "teams" / team / "config.yaml"
-        elif test_type == "api":
-            config_path = self._root_dir / "api" / "teams" / team / "config.yaml"
+        if test_type == "api":
+            config_path = self._root_dir / "tests" / "api" / "teams" / team / "config.yaml"
         else:
-            raise ValueError(f"Invalid test type: {test_type}. Use 'ui' or 'api'.")
+            raise ValueError(f"Invalid test type: {test_type}. Use 'api'.")
 
         if not config_path.exists():
             raise FileNotFoundError(f"Config not found: {config_path}")
